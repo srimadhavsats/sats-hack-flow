@@ -32,8 +32,15 @@ export default function App() {
   }, [incidentsList, selectedYear, searchQuery]);
 
   // Active Incident Object
+  // Prefer the currently filtered list so that changing the year/search jumps the
+  // main view to a relevant incident instead of getting stuck on an out-of-filter one.
   const activeIncident = useMemo(() => {
-    return incidentsList.find(i => i.id === selectedIncidentId) || filteredIncidents[0] || incidentsList[0];
+    return (
+      filteredIncidents.find(i => i.id === selectedIncidentId) ||
+      filteredIncidents[0] ||
+      incidentsList.find(i => i.id === selectedIncidentId) ||
+      incidentsList[0]
+    );
   }, [incidentsList, selectedIncidentId, filteredIncidents]);
 
   const handleAddCustomIncident = (customIncident) => {
@@ -126,7 +133,7 @@ export default function App() {
 
       {/* Footer */}
       <footer className="bg-[#060912] border-t border-slate-800/80 px-4 py-3 text-center text-xs text-slate-500 font-mono">
-        ChainSleuth Forensic Visualizer MVP — ZachXBT Toolkit Suite | 2016-2024 Historical Dataset
+        Sats Hack Flow — Forensic Visualizer MVP | ZachXBT Toolkit Suite | 2016–2025 Historical Dataset
       </footer>
 
     </div>

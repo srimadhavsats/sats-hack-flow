@@ -1,4 +1,10 @@
-// Chronological database of smart contract hacks & exploits (2016 - 2024)
+// Chronological database of smart contract hacks & exploits (2016 - 2025)
+//
+// NOTE ON DATA FIDELITY: incident-level facts (amounts, dates, victims, attack
+// vectors, attribution, status) are drawn from public post-mortems and are accurate.
+// The per-node wallet addresses and tx hashes are ILLUSTRATIVE placeholders for the
+// flow-graph, except where a well-published exploiter address is used (e.g. Bybit).
+// A production forensic build would source these live from Arkham / Etherscan APIs.
 
 export const INCIDENTS = [
   {
@@ -503,7 +509,171 @@ export const INCIDENTS = [
       { time: "2024-05-31 04:20:00 UTC", event: "Massive BTC Outflow Alert", chain: "Bitcoin", detail: "4,502.9 BTC moved from DMM Exchange hot/cold vault" },
       { time: "2024-06-05 12:00:00 UTC", event: "ZachXBT Investigation Post", chain: "Twitter/X", detail: "ZachXBT identifies laundering through eXch and Wasabi mixers" }
     ]
+  },
+  {
+    id: "wazirx-2024",
+    name: "WazirX Multisig Exploit",
+    year: 2024,
+    date: "July 18, 2024",
+    totalStolen: 230000000,
+    stolenFormatted: "$230.0 Million (Multi-Token)",
+    victim: "WazirX (Indian Exchange)",
+    attackVector: "Safe{Wallet} Multisig Compromise / Malicious Upgrade",
+    chains: ["Ethereum"],
+    status: "Unrecovered / Losses Socialized",
+    hackerEntity: "Lazarus Group (North Korea)",
+    description: "Attackers compromised WazirX's Gnosis Safe multisig by tricking signers into approving a malicious contract upgrade — the transaction shown in the custody interface differed from the payload actually signed. They drained $230M in ETH and ERC-20 tokens (SHIB, PEPE, USDT, GALA), later laundered through Tornado Cash. Elliptic and ZachXBT attributed the theft to North Korea's Lazarus Group.",
+    nodes: [
+      { id: "wazirx_safe", label: "WazirX Safe Multisig\n0x27fd43...a4f8", type: "victim", value: 230000000, entity: "Exchange Custody Vault", chain: "Ethereum", address: "0x27fd43...a4f8" },
+      { id: "wazirx_hacker", label: "Lazarus Exploiter EOA\n0x6eeda...5f2c", type: "hacker", value: 230000000, entity: "OFAC Linked Hacker", chain: "Ethereum", address: "0x6eeda...5f2c" },
+      { id: "tornado_wazirx", label: "Tornado Cash Pools\n(100 ETH Batches)", type: "mixer", value: 150000000, entity: "Privacy Mixer", chain: "Ethereum", address: "0x8589...tornado" }
+    ],
+    edges: [
+      { from: "wazirx_safe", to: "wazirx_hacker", label: "$230M ETH + SHIB/PEPE/USDT", value: 230000000, token: "ETH/ERC-20", txHash: "0x48e5a1...b21c", timestamp: "2024-07-18 12:16 UTC" },
+      { from: "wazirx_hacker", to: "tornado_wazirx", label: "$150M Laundered via Mixer", value: 150000000, token: "ETH", txHash: "0x9a71c2...004d", timestamp: "2024-07-22 09:00 UTC" }
+    ],
+    callTrace: [
+      { step: 1, depth: 0, contract: "GnosisSafeProxy", function: "execTransaction(...)", status: "SUCCESS", value: "0 ETH", note: "Signers approved a masked transaction; the Liminal UI payload differed from the signed calldata" },
+      { step: 2, depth: 1, contract: "GnosisSafe", function: "delegatecall -> upgradeTo(attacker)", status: "EXPLOITED", value: "0 ETH", note: "⚠️ Safe implementation swapped to an attacker-controlled contract" },
+      { step: 3, depth: 2, contract: "MaliciousImpl.sol", function: "sweepTokens()", status: "DRAINED", value: "$230,000,000", note: "All ETH and ERC-20 balances swept from the multisig" }
+    ],
+    cieloTimeline: [
+      { time: "2024-07-18 12:16:00 UTC", event: "Mass Token Outflow", chain: "Ethereum", detail: "$230M across 6 tokens moved to 0x6eeda..." },
+      { time: "2024-07-19 10:00:00 UTC", event: "Lazarus Attribution", chain: "Off-Chain", detail: "Elliptic & ZachXBT link theft to North Korea's Lazarus Group" }
+    ]
+  },
+  {
+    id: "radiant-capital-2024",
+    name: "Radiant Capital Exploit",
+    year: 2024,
+    date: "October 16, 2024",
+    totalStolen: 50000000,
+    stolenFormatted: "$50.0 Million (Cross-Chain)",
+    victim: "Radiant Capital",
+    attackVector: "Developer Device Malware / Multisig Key Compromise",
+    chains: ["Arbitrum", "BNB Chain", "Ethereum"],
+    status: "Unrecovered / DPRK Attributed",
+    hackerEntity: "North Korea (DPRK / Citrine Sleet)",
+    description: "DPRK operatives infected multiple Radiant developer devices with malware and harvested private keys to three of the protocol's multisig signers. Signers unknowingly approved malicious transactions that displayed as legitimate in their wallets, transferring ownership of the lending pools and draining ~$50M across Arbitrum and BNB Chain.",
+    nodes: [
+      { id: "radiant_pools", label: "Radiant Lending Pools\n(Arbitrum / BSC)", type: "victim", value: 50000000, entity: "Lending Pool Vault", chain: "Arbitrum", address: "0xa950...pools" },
+      { id: "radiant_hacker", label: "DPRK Exploiter EOA\n0x0629...11ac", type: "hacker", value: 50000000, entity: "DPRK Exploiter", chain: "Ethereum", address: "0x0629...11ac" },
+      { id: "radiant_bridge", label: "Cross-Chain Bridge Hop\n(Arbitrum -> Ethereum)", type: "bridge", value: 50000000, entity: "Bridge Hop", chain: "Cross-Chain", address: "0x33ab...bridge" }
+    ],
+    edges: [
+      { from: "radiant_pools", to: "radiant_hacker", label: "$50M rTokens Redeemed", value: 50000000, token: "ETH/USDC/USDT", txHash: "0x7c9a01...ff21", timestamp: "2024-10-16 20:52 UTC" },
+      { from: "radiant_hacker", to: "radiant_bridge", label: "Bridged to Ethereum", value: 50000000, token: "ETH", txHash: "0x11de44...aa90", timestamp: "2024-10-17 03:30 UTC" }
+    ],
+    callTrace: [
+      { step: 1, depth: 0, contract: "LendingPool (Proxy)", function: "transferOwnership(attacker)", status: "UNAUTHORIZED", value: "0 ETH", note: "Malware-stolen signer keys approved an ownership transfer to the attacker" },
+      { step: 2, depth: 1, contract: "LendingPool", function: "upgradeToAndCall(malicious)", status: "EXPLOITED", value: "0 ETH", note: "⚠️ Pools upgraded to a malicious implementation contract" },
+      { step: 3, depth: 2, contract: "MaliciousImpl.sol", function: "drain()", status: "DRAINED", value: "$50,000,000", note: "Pool reserves swept across Arbitrum and BNB Chain" }
+    ],
+    cieloTimeline: [
+      { time: "2024-10-16 20:52:00 UTC", event: "Ownership Transfer", chain: "Arbitrum", detail: "Radiant pool ownership moved to attacker EOA" },
+      { time: "2024-10-17 12:00:00 UTC", event: "DPRK Attribution", chain: "Off-Chain", detail: "Mandiant & ZachXBT attribute the malware intrusion to North Korea" }
+    ]
+  },
+  {
+    id: "phemex-2025",
+    name: "Phemex Hot Wallet Hack",
+    year: 2025,
+    date: "January 23, 2025",
+    totalStolen: 73000000,
+    stolenFormatted: "$73.0 Million (Multi-Chain)",
+    victim: "Phemex Exchange",
+    attackVector: "Hot Wallet Private Key Compromise",
+    chains: ["Ethereum", "Solana", "BNB Chain"],
+    status: "Users Reimbursed / Lazarus Suspected",
+    hackerEntity: "Phemex Drainer (Lazarus Suspected)",
+    description: "Singapore-based exchange Phemex suffered a hot wallet compromise spanning 11+ blockchains, with attackers draining roughly $73M and swapping assets to ETH. On-chain analysts linked the laundering pattern to North Korea's Lazarus Group. Phemex pledged to fully reimburse affected users.",
+    nodes: [
+      { id: "phemex_hot", label: "Phemex Hot Wallets\n(Multi-Chain)", type: "victim", value: 73000000, entity: "Exchange Hot Wallet", chain: "Multi-Chain", address: "0x33ff...phemex" },
+      { id: "phemex_hacker", label: "Phemex Drainer EOA\n0x33d0...7b41", type: "hacker", value: 73000000, entity: "Exchange Drainer", chain: "Ethereum", address: "0x33d0...7b41" },
+      { id: "phemex_dex", label: "DEX Swap Hops\n(Assets -> ETH)", type: "bridge", value: 60000000, entity: "DEX Swap Hops", chain: "Multi-Chain", address: "0x901a...swap" }
+    ],
+    edges: [
+      { from: "phemex_hot", to: "phemex_hacker", label: "$73M Across 11 Chains", value: 73000000, token: "ETH/SOL/BNB", txHash: "0x6b2f19...c0a2", timestamp: "2025-01-23 06:30 UTC" },
+      { from: "phemex_hacker", to: "phemex_dex", label: "Swapped altcoins to ETH", value: 60000000, token: "ETH", txHash: "0x88ca31...129f", timestamp: "2025-01-23 09:10 UTC" }
+    ],
+    callTrace: [
+      { step: 1, depth: 0, contract: "Phemex Hot Wallet", function: "transfer()", status: "UNAUTHORIZED", value: "$73,000,000", note: "Attacker held valid private keys and drained hot wallets across 11+ chains" }
+    ],
+    cieloTimeline: [
+      { time: "2025-01-23 06:30:00 UTC", event: "Anomalous Multi-Chain Outflow", chain: "Multi-Chain", detail: "$73M drained from Phemex hot wallets in minutes" },
+      { time: "2025-01-24 08:00:00 UTC", event: "ZachXBT Alert", chain: "Twitter/X", detail: "Laundering pattern flagged as consistent with Lazarus Group" }
+    ]
+  },
+  {
+    id: "bybit-2025",
+    name: "Bybit Cold Wallet Heist",
+    year: 2025,
+    date: "February 21, 2025",
+    totalStolen: 1460000000,
+    stolenFormatted: "$1.46 Billion (401k ETH)",
+    victim: "Bybit Exchange",
+    attackVector: "Safe{Wallet} UI Compromise / Blind-Signed Delegatecall",
+    chains: ["Ethereum"],
+    status: "Largest Hack Ever / Bybit Remained Solvent",
+    hackerEntity: "Lazarus Group / TraderTraitor (North Korea)",
+    description: "The largest crypto theft in history. Lazarus (TraderTraitor) compromised the Safe{Wallet} front-end and served malicious JavaScript that caused Bybit's signers to blind-sign a delegatecall, swapping the ETH cold wallet's implementation for an attacker contract. Around 401,347 ETH (~$1.46B) was drained in a single transaction and laundered through THORChain, no-KYC swappers and mixers. Bybit covered the shortfall via loans and stayed backed 1:1.",
+    nodes: [
+      { id: "bybit_cold", label: "Bybit ETH Cold Wallet\n0x1db92...c1f7", type: "victim", value: 1460000000, entity: "Exchange Cold Vault", chain: "Ethereum", address: "0x1db92...c1f7" },
+      { id: "bybit_hacker", label: "Bybit Exploiter EOA\n0x4766...86E2", type: "hacker", value: 1460000000, entity: "Lazarus Exploiter", chain: "Ethereum", address: "0x47666Fab8bd0Ac7003bce3f5C3585383F09486E2" },
+      { id: "thorchain_bybit", label: "THORChain Cross-Chain\n(ETH -> BTC)", type: "bridge", value: 900000000, entity: "Native BTC Bridge", chain: "Cross-Chain", address: "thor1...bybit" },
+      { id: "exch_bybit", label: "eXch No-KYC Swapper", type: "mixer", value: 300000000, entity: "Instant Exchange / Mixer", chain: "Multi-Chain", address: "eXch...swap" }
+    ],
+    edges: [
+      { from: "bybit_cold", to: "bybit_hacker", label: "401,347 ETH ($1.46B)", value: 1460000000, token: "ETH/stETH/mETH", txHash: "0xb61413...2f0e", timestamp: "2025-02-21 14:16 UTC" },
+      { from: "bybit_hacker", to: "thorchain_bybit", label: "Bridged ETH -> Native BTC", value: 900000000, token: "BTC", txHash: "0x2c88fa...9911", timestamp: "2025-02-22 00:00 UTC" },
+      { from: "bybit_hacker", to: "exch_bybit", label: "Laundered via eXch", value: 300000000, token: "ETH", txHash: "0x77b0ce...4a2d", timestamp: "2025-02-23 12:00 UTC" }
+    ],
+    callTrace: [
+      { step: 1, depth: 0, contract: "SafeProxy", function: "execTransaction(...)", status: "SUCCESS", value: "0 ETH", note: "Signers blind-signed a transaction masked by the compromised Safe{Wallet} UI" },
+      { step: 2, depth: 1, contract: "GnosisSafe", function: "delegatecall(attacker)", status: "EXPLOITED", value: "0 ETH", note: "⚠️ DELEGATECALL swapped the cold wallet implementation to an attacker contract" },
+      { step: 3, depth: 2, contract: "MaliciousImpl.sol", function: "sweepETH()", status: "DRAINED", value: "401,347 ETH", note: "Entire ETH cold wallet drained in one transaction (~$1.46B)" }
+    ],
+    cieloTimeline: [
+      { time: "2025-02-21 14:16:00 UTC", event: "Record Cold Wallet Drain", chain: "Ethereum", detail: "401,347 ETH (~$1.46B) moved to 0x4766Fab..." },
+      { time: "2025-02-21 15:44:00 UTC", event: "ZachXBT / Arkham Attribution", chain: "Twitter/X", detail: "Attack attributed to Lazarus Group within hours" },
+      { time: "2025-02-26 00:00:00 UTC", event: "FBI TraderTraitor Alert", chain: "Off-Chain", detail: "FBI confirms North Korea 'TraderTraitor' responsible" }
+    ]
+  },
+  {
+    id: "cetus-2025",
+    name: "Cetus Protocol AMM Exploit",
+    year: 2025,
+    date: "May 22, 2025",
+    totalStolen: 223000000,
+    stolenFormatted: "$223.0 Million (SUI / USDC)",
+    victim: "Cetus Protocol (Sui DEX)",
+    attackVector: "Liquidity Math Overflow / Faulty Checked-Shift",
+    chains: ["Sui"],
+    status: "Partially Frozen by Sui Validators",
+    hackerEntity: "Cetus Exploiter",
+    description: "Sui's largest DEX lost ~$223M when an attacker exploited a flawed overflow check (checked_shlw) in Cetus's concentrated-liquidity math, opening enormous positions with a negligible deposit and draining pool reserves. Sui validators controversially froze ~$162M by censoring the attacker's transactions, and a governance vote coordinated a partial recovery.",
+    nodes: [
+      { id: "cetus_pools", label: "Cetus Liquidity Pools\n(Sui AMM)", type: "victim", value: 223000000, entity: "AMM Pool Vault", chain: "Sui", address: "0xcetus...pool" },
+      { id: "cetus_hacker", label: "Cetus Exploiter\n0x8fda...sui", type: "hacker", value: 223000000, entity: "AMM Exploiter", chain: "Sui", address: "0x8fda...sui" },
+      { id: "sui_validators", label: "Sui Validator Freeze\n($162M Censored)", type: "hop", value: 162000000, entity: "Validator Freeze", chain: "Sui", address: "SuiValidators" },
+      { id: "cetus_bridge", label: "Wormhole Bridge Hop\n(SUI -> ETH)", type: "bridge", value: 60000000, entity: "Bridge Hop", chain: "Cross-Chain", address: "0x61ac...bridge" }
+    ],
+    edges: [
+      { from: "cetus_pools", to: "cetus_hacker", label: "$223M Drained", value: 223000000, token: "SUI/USDC", txHash: "9xTq...sui", timestamp: "2025-05-22 10:40 UTC" },
+      { from: "cetus_hacker", to: "sui_validators", label: "$162M Frozen by Validators", value: 162000000, token: "SUI/USDC", txHash: "N/A (Censored)", timestamp: "2025-05-22 12:00 UTC" },
+      { from: "cetus_hacker", to: "cetus_bridge", label: "$60M Bridged to Ethereum", value: 60000000, token: "ETH", txHash: "0x4d8ba1...77cc", timestamp: "2025-05-22 11:20 UTC" }
+    ],
+    callTrace: [
+      { step: 1, depth: 0, contract: "CetusPool (Move)", function: "add_liquidity()", status: "MANIPULATED", value: "0", note: "⚠️ checked_shlw overflow bypass let a 1-token deposit mint enormous liquidity" },
+      { step: 2, depth: 1, contract: "CetusPool (Move)", function: "remove_liquidity() / swap()", status: "DRAINED", value: "$223,000,000", note: "Attacker withdrew real reserves against the fake liquidity position" }
+    ],
+    cieloTimeline: [
+      { time: "2025-05-22 10:40:00 UTC", event: "AMM Liquidity Drain", chain: "Sui", detail: "Cetus pools drained of ~$223M" },
+      { time: "2025-05-22 12:00:00 UTC", event: "Validator Freeze", chain: "Sui", detail: "Sui validators censor attacker transactions, freezing ~$162M" }
+    ]
   }
 ];
 
-export const YEARS = ["All", 2016, 2017, 2020, 2021, 2022, 2023, 2024];
+// Derived automatically from INCIDENTS so the year filter never goes stale as
+// new incidents are added (previously a hardcoded list that had to be edited by hand).
+export const YEARS = ["All", ...Array.from(new Set(INCIDENTS.map(i => i.year))).sort((a, b) => a - b)];

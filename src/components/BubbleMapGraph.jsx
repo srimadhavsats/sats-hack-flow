@@ -87,8 +87,11 @@ export default function BubbleMapGraph({ incident, onSelectNode, selectedNodeId 
     });
 
     // Formatted Vis.js Edges
-    const visEdges = filteredEdges.map(edge => ({
-      id: `${edge.from}-${edge.to}`,
+    // NOTE: id must include the index — some incidents (e.g. Parity MultiSig) have
+    // multiple transfers between the same two nodes, and a non-unique id makes
+    // vis-data's DataSet throw a duplicate-id error, crashing the graph.
+    const visEdges = filteredEdges.map((edge, idx) => ({
+      id: `${edge.from}-${edge.to}-${idx}`,
       from: edge.from,
       to: edge.to,
       label: edge.label,

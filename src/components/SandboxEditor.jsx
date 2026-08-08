@@ -24,6 +24,10 @@ export default function SandboxEditor({ onAddCustomIncident }) {
 
   const [copiedMermaid, setCopiedMermaid] = useState(false);
 
+  // Generate a realistic-length hex string (Math.random().toString(16) only yields ~13 chars).
+  const randomHex = (len) =>
+    Array.from({ length: len }, () => Math.floor(Math.random() * 16).toString(16)).join('');
+
   const handleAddNode = (e) => {
     e.preventDefault();
     if (!newNodeLabel.trim()) return;
@@ -36,7 +40,7 @@ export default function SandboxEditor({ onAddCustomIncident }) {
       value: Number(newNodeVal) || 100000,
       entity: newNodeType.toUpperCase(),
       chain: "Ethereum",
-      address: `0x${Math.random().toString(16).substring(2, 42)}`
+      address: `0x${randomHex(40)}`
     };
 
     setNodes([...nodes, nodeObj]);
@@ -53,7 +57,7 @@ export default function SandboxEditor({ onAddCustomIncident }) {
       label: edgeLabel || "Transfer",
       value: 100000,
       token: "ETH",
-      txHash: `0x${Math.random().toString(16).substring(2, 20)}`,
+      txHash: `0x${randomHex(64)}`,
       timestamp: new Date().toISOString()
     };
 

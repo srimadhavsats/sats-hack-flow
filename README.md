@@ -8,7 +8,7 @@ Live Demo & Project Repository: [https://github.com/srimadhavsats/sats-hack-flow
 
 ## 🔥 Features
 
-- **Chronological Hack Timeline (2016 - 2024)**: Pre-loaded interactive datasets for 15 historical smart contract hacks (The DAO, Ronin Bridge, Euler Finance, Poly Network, Curve Finance, DMM Bitcoin, etc.).
+- **Chronological Hack Timeline (2016 - 2025)**: Pre-loaded interactive datasets for 20 major smart contract hacks and exploits — from The DAO (2016) and Ronin Bridge to WazirX, Radiant Capital, and the record-breaking **$1.46B Bybit heist (2025)**, the largest crypto theft in history.
 - **Interactive Fund Flow Bubble Map**: Powered by Vis.js & Canvas node rendering with bubble sizing proportional to fund volume ($ USD / ETH).
 - **Arkham Entity & Cielo Wallet Inspector**: Multi-chain wallet balance inspection, risk scoring, OFAC sanction status, and cross-chain timeline events.
 - **MetaSleuth Call Trace Inspector**: Decoded EVM transaction call stack breakdown with vulnerability analysis.
