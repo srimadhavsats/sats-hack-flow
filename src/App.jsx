@@ -7,6 +7,7 @@ import EntityInspector from './components/EntityInspector';
 import CallTraceView from './components/CallTraceView';
 import OsintToolkit from './components/OsintToolkit';
 import SandboxEditor from './components/SandboxEditor';
+import LiveTrace from './components/LiveTrace';
 
 export default function App() {
   const [incidentsList, setIncidentsList] = useState(INCIDENTS);
@@ -68,8 +69,8 @@ export default function App() {
         onTabChange={setActiveTab}
       />
 
-      {/* Case Metrics & Incident Overview Banner */}
-      <StatsBanner incident={activeIncident} />
+      {/* Case Metrics & Incident Overview Banner (hidden on the live tab, which has its own metrics) */}
+      {activeTab !== 'live' && <StatsBanner incident={activeIncident} />}
 
       {/* Main View Area */}
       <main className="flex-1 max-w-[1700px] w-full mx-auto p-4 flex flex-col gap-6">
@@ -126,6 +127,13 @@ export default function App() {
         {activeTab === 'sandbox' && (
           <div className="w-full">
             <SandboxEditor onAddCustomIncident={handleAddCustomIncident} />
+          </div>
+        )}
+
+        {/* TAB 6: Live On-Chain Address Trace (real Ethereum data) */}
+        {activeTab === 'live' && (
+          <div className="w-full">
+            <LiveTrace />
           </div>
         )}
 

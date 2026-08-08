@@ -1,5 +1,5 @@
 import React from 'react';
-import { Shield, Filter, Search, Network, Layers, Wallet, Globe, Code } from 'lucide-react';
+import { Shield, Filter, Search, Network, Layers, Wallet, Globe, Code, Radar } from 'lucide-react';
 import { YEARS } from '../data/incidents';
 
 export default function Navbar({
@@ -60,6 +60,18 @@ export default function Navbar({
           >
             <Network className="w-3.5 h-3.5" />
             <span>Fund Flow Map</span>
+          </button>
+
+          <button
+            onClick={() => onTabChange('live')}
+            className={`flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-semibold transition ${
+              activeTab === 'live'
+                ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
+                : 'text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            <Radar className="w-3.5 h-3.5 text-amber-400" />
+            <span>Live Trace</span>
           </button>
 
           <button

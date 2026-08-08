@@ -13,6 +13,7 @@ Live Demo & Project Repository: [https://github.com/srimadhavsats/sats-hack-flow
 - **Arkham Entity & Cielo Wallet Inspector**: Multi-chain wallet balance inspection, risk scoring, OFAC sanction status, and cross-chain timeline events.
 - **MetaSleuth Call Trace Inspector**: Decoded EVM transaction call stack breakdown with vulnerability analysis.
 - **ZachXBT OSINT & Breach Intelligence Toolkit**: Integrated query hub for LeakPeek, Snusbase, Intelx, Spur, OSINT Industries, Cavalier (Hudson Rock), Wayback Machine, and Archive.today.
+- **Live On-Chain Address Trace**: Paste any Ethereum address to pull **real** chain data — balance, nonce, contract/EOA status, and recent fund flows — via raw **JSON-RPC** (`eth_getBalance` / `eth_getTransactionCount` / `eth_getCode`) plus the keyless Blockscout REST API for entity labels and ENS names. No API key, fully client-side, and the results render in the same forensic bubble-map graph.
 - **Custom Sandbox & Obsidian Exporter**: Build custom investigation case files and export to Obsidian Mermaid flowchart markdown format.
 
 ---
@@ -42,3 +43,4 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 - **Frontend**: React 18, Vite 5, Lucide React
 - **Styling**: Tailwind CSS v4, Vanilla CSS
 - **Graphing & Visualization**: Vis.js Network, Vis.data, HTML5 Canvas
+- **Live Data**: raw JSON-RPC (public Ethereum endpoints) + Blockscout v2 REST API — keyless, client-side
