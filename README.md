@@ -106,7 +106,7 @@ sats-hack-flow/
 ├── vite.config.js                # Vite configuration
 ├── tailwind.config.js            # Tailwind CSS v4 config
 ├── package.json
-└── requirements.txt              # Python dependencies (auxiliary)
+└── requirements.txt              # Dependency reference & quick start
 ```
 
 ---

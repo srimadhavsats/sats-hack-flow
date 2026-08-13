@@ -1,22 +1,23 @@
 # Sats Hack Flow - Project Dependencies
-# This is a Node.js project. Install dependencies with: npm install
+# This is a Node.js/React project. Install dependencies with: npm install
 
 # ── Runtime Dependencies ──────────────────────────
-react==18.2.0
-react-dom==18.2.0
-lucide-react==0.344.0
-vis-data==7.1.9
-vis-network==9.1.9
+# react ^18.2.0
+# react-dom ^18.2.0
+# lucide-react ^0.344.0
+# vis-data ^7.1.9
+# vis-network ^9.1.9
 
 # ── Dev Dependencies ──────────────────────────────
-vite==5.1.6
-@vitejs/plugin-react==4.2.1
-tailwindcss==4.0.0
-@tailwindcss/postcss==4.0.0
-postcss==8.4.35
-autoprefixer==10.4.18
+# vite ^5.1.6
+# @vitejs/plugin-react ^4.2.1
+# tailwindcss ^4.0.0
+# @tailwindcss/postcss ^4.0.0
+# postcss ^8.4.35
+# autoprefixer ^10.4.18
 
-# ── Notes ─────────────────────────────────────────
-# Build: npm run build
-# Dev server: npm run dev
-# Preview: npm run preview
+# ── Quick Start ───────────────────────────────────
+# npm install        Install all dependencies
+# npm run dev        Start development server (localhost:3000)
+# npm run build      Production build to dist/
+# npm run preview    Preview production build
